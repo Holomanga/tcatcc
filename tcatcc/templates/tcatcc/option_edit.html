@@ -1,0 +1,53 @@
+{% extends "base_generic.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Editing {{option}}</title>
+{% endblock %}
+
+{% block content %}
+<h1>Editing {{option}}</h1>
+
+<p>
+Editing the name of the {{option.name}} option{% if option.question %} for the question {{option.question}}{% endif %}, part of the <a href="{% url 'markets:market-detail' option.market.id %}">{{option.market.name}}</a> market.
+</p>
+
+<form action="" method="post">
+	{% csrf_token %}
+	{% for field in editForm.visible_fields %}
+	 <div class="form-group row">
+	  <label for="{{ field.id_for_label }}" class="col-sm-2 col-form-label">{{ field.label }}:</label>
+	   <div class="col-sm-10">{% render_field field class="form-control" %}</div>
+	   {% for error in field.errors %}
+	    <span class="help-block">{{ error }}</span>
+	   {% endfor %}
+	 </div>
+	{% endfor %}
+	<input type="submit" name="editbutton" class="btn btn-primary" value="Edit Option">
+</form>
+
+<br/>
+<p>Resolve the {{option.name}} option at a certain price using the below form. This will suspend trading and pay out the resolution price for each owned share.</p>
+
+<form action="" method="post">
+	{% csrf_token %}
+	{% for field in resolveForm.visible_fields %}
+	 <div class="form-group row">
+	  <label for="{{ field.id_for_label }}" class="col-sm-2 col-form-label">{{ field.label }}:</label>
+	   <div class="col-sm-10">
+        <div class="input-group mb-3">
+         <div class="input-group-prepend">
+          <span class="input-group-text">¤</span>
+         </div>
+	   	 {% render_field field class="form-control" %}
+	   	</div>
+	   </div>
+	   {% for error in field.errors %}
+	    <span class="help-block">{{ error }}</span>
+	   {% endfor %}
+	 </div>
+	{% endfor %}
+	<input type="submit" name="resolvebutton" class="btn btn-primary" value="Resolve Option">
+</form>
+
+{% endblock %}

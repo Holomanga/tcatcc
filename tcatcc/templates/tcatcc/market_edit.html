@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+<title>Edit {{market.name}}</title>
+{% endblock %}
+
+{% block content %}
+<h1>Edit {{market.name}}</h1>
+
+<p>
+Editing the <a href="{% url 'markets:market-detail' market.id %}">{{market.name}}</a> market.
+</p>
+
+<form action="" method="post">
+	{% csrf_token %}
+	{% for field in form.visible_fields %}
+	 <div class="form-group row">
+	  <label for="{{ field.id_for_label }}" class="col-sm-2 col-form-label">{{ field.label }}:</label>
+	   <div class="col-sm-10">{% render_field field class="form-control" %}</div>
+	   {% for error in field.errors %}
+	    <span class="help-block">{{ error }}</span>
+	   {% endfor %}
+	 </div>
+	{% endfor %}
+	<input type="submit" class="btn btn-primary" value="Edit Market">
+</form>
+
+{% endblock %}
