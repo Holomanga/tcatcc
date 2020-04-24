@@ -1,12 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponse
+from django.urls import reverse
 
 from .models import Item
 from .forms import createItemForm
 
 # Create your views here.
 def index(request):
-	itemlist = Item.objects.all()
+	itemlist = Item.objects.filter(stillOpen=True)
 	context = {
 		'items': itemlist,
 	}
@@ -15,18 +16,21 @@ def index(request):
 def newItemView(request):
 	form = createItemForm()
 	if request.method == "POST":
+
 		form = createItemForm(request.POST)
+
 		if form.is_valid():
 			newItem = Item()
-			newItem.name = form.get_cleaned_data['name']
-			newItem.description = form.get_cleaned_data['description']
+			newItem.name = form.cleaned_data['name']
+			newItem.description = form.cleaned_data['description']
 
 			newItem.owner = request.user
 
-			newItem.threshold = form.get_cleaned_data['threshold']
-			newItem.expiryDate = form.get_cleaned_data['expiryDate']
+			newItem.threshold = form.cleaned_data['threshold']
+			newItem.expiryDate = form.cleaned_data['expiryDate']
 
 			newItem.save()
+			return HttpResponseRedirect(reverse('tcatcc:index') )
 
 	context = {
 		'form': form,
