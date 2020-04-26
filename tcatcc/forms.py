@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 import html5.forms.widgets as html5_widgets
 
-from .models import Item
+from .models import Item, Agreement
 
 class createItemForm(forms.ModelForm):
 	class Meta:
@@ -30,6 +30,11 @@ class createItemForm(forms.ModelForm):
 			if data <= timezone.now():
 				raise ValidationError(_('Expiry date must be in the future if present.'))
 		return data
+
+class subscribeForm(forms.ModelForm):
+	class Meta:
+		model = Agreement
+		fields = ['email']
 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm

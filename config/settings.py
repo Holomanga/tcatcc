@@ -134,5 +134,5 @@ import os
 
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-SENDGRID_SANDBOX_MODE_IN_DEBUG=True
-SENDGRID_ECHO_TO_STDOUT=True
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

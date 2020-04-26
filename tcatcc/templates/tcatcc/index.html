@@ -1,6 +1,6 @@
 {% extends "base_generic.html" %}
 
-{% block title %}e{% endblock %}
+{% block title %}Index{% endblock %}
 
 {% block content %}
 <h1>Index</h1>
@@ -23,10 +23,11 @@
 	<tbody>
 		{% for item in items %}
 		<tr>
-			<td>{{item.name}}<br/>
+			<td><a href="{% url 'tcatcc:item-detail' item.id %}"><div>{{item.name}}<br/>
 			<div class="progress">
 				<div class="progress-bar" role="progressbar" style="width: {% widthratio item.agreers item.threshold 100 %}%" aria-valuenow="{{item.agreers}}" aria-valuemin="0" aria-valuemax="{{item.threshold}}">{{item.agreers}}/{{item.threshold}}</div>
 			</div>
+			</div></a>
 			</td>
 			<td>{{item.description}}</td>
 		</tr>

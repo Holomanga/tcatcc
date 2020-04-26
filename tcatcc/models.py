@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import uuid
 
 from django.contrib.auth.models import User
 
@@ -46,3 +47,36 @@ class Agreement(models.Model):
 	def save(self,*args,**kwargs):
 		super().save(*args, **kwargs)
 		self.item.checkAndSendEmails()
+
+class AgreementRequest(models.Model):
+	id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
+	email = models.EmailField()
+	item = models.ForeignKey(Item, on_delete=models.CASCADE)
+	creationDate = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return "Token"
+
+	def expired(self):
+		return (timezone.now() - creationDate).total_seconds() > 86400;
+
+	def validate(self,*args,**kwargs):
+		agreement = Agreement()
+		if Agreement.filter(email=self.email).filter(item=self.item).count() == 0: 
+			agreement.email = self.email
+			agreement.item = self.item
+			agreement.save()
+		self.delete()
+
+	def save(self,*args,**kwargs):
+		send_mail(
+			'TCATCC Alert',
+			"You've signed up to %s, chungus."%(self.pk),
+			'diamond-grouping@example.com',
+			[self.email]
+		)
+
+		AgreementRequest.filter(expired=True).delete()
+		
+		super().save(*args,**kwargs)
+
