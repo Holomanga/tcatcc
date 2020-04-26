@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from tcatcc import views as tcatccviews
 
 urlpatterns = [
 	path('', include('tcatcc.urls')),
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls'))
+    path('accounts/signup', tcatccviews.signUp, name='sign-up'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

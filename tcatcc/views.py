@@ -1,13 +1,16 @@
 from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse
+from django.utils import timezone
+
+from django.contrib.auth import authenticate, login
 
 from .models import Item, AgreementRequest
-from .forms import createItemForm, subscribeForm
+from .forms import createItemForm, subscribeForm, customUserCreationForm
 
 # Create your views here.
 def index(request):
-	itemlist = Item.objects.filter(stillOpen=True)
+	itemlist = Item.objects.exclude(expiryDate__lt=timezone.now()).filter(stillOpen=True)
 	context = {
 		'items': itemlist,
 	}
@@ -24,7 +27,8 @@ def newItemView(request):
 			newItem.name = form.cleaned_data['name']
 			newItem.description = form.cleaned_data['description']
 
-			newItem.owner = request.user
+			if request.user.is_authenticated:
+				newItem.owner = request.user
 
 			newItem.threshold = form.cleaned_data['threshold']
 			newItem.expiryDate = form.cleaned_data['expiryDate']
@@ -67,3 +71,22 @@ def confirmSignupView(request, uuid):
 	signup = get_object_or_404(AgreementRequest,pk=uuid)
 	signup.validate()
 	return HttpResponseRedirect(reverse('tcatcc:index'))
+
+def signUp(request):
+	form = customUserCreationForm()
+	if request.method == "POST":
+		form = customUserCreationForm(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data['username']
+			raw_password = form.cleaned_data['password1']
+			email = form.cleaned_data['email']
+			form.save()
+			user = authenticate(username=username, password=raw_password)
+			login(request, user)
+			return HttpResponseRedirect(reverse('markets:index'))
+
+	context = {
+		'form':form,
+	}
+	
+	return render(request, 'registration/sign_up.html', context)

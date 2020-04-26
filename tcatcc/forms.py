@@ -42,4 +42,4 @@ from django.contrib.auth.forms import UserCreationForm
 class customUserCreationForm(UserCreationForm):
 	class Meta(UserCreationForm.Meta):
 		model = User
-		fields = UserCreationForm.Meta.fields# + ('email',)
+		fields = UserCreationForm.Meta.fields + ('email',)

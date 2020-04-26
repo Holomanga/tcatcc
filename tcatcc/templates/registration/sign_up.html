@@ -2,21 +2,16 @@
 {% load widget_tweaks %}
 
 {% block title %}
-{{item.name}}
+<title>Sign Up</title>
 {% endblock %}
 
 {% block content %}
-<h1>{{item.name}}</h1>
 
-<p>
-{{item.description}}
-</p>
-
-<h2>Sign Up</h2>
+<h1>Sign Up</h1>
 
 <form action="" method="post">
 	{% csrf_token %}
-	{% for field in subscribeForm.visible_fields %}
+	{% for field in form.visible_fields %}
 	 <div class="form-group row">
 	  <label for="{{ field.id_for_label }}" class="col-sm-2 col-form-label">{{ field.label }}:</label>
 	   <div class="col-sm-10">{% render_field field class="form-control" %}</div>
@@ -25,7 +20,7 @@
 	   {% endfor %}
 	 </div>
 	{% endfor %}
-	<input type="submit" class="btn btn-primary" name="signupbutton" value="Sign Up">
+	<input type="submit" class="btn btn-primary" value="Sign Up">
 </form>
 
 {% endblock %}

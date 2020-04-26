@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-import uuid
+import uuid, datetime
 
 from django.contrib.auth.models import User
 
@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 class Item(models.Model):
 	name = models.TextField()
 	description = models.TextField()
-	owner = models.ForeignKey(User, on_delete=models.CASCADE)
+	owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
 	threshold = models.IntegerField()
 	expiryDate =  models.DateTimeField(blank=True,null=True)
@@ -62,7 +62,7 @@ class AgreementRequest(models.Model):
 
 	def validate(self,*args,**kwargs):
 		agreement = Agreement()
-		if Agreement.filter(email=self.email).filter(item=self.item).count() == 0: 
+		if Agreement.objects.filter(email=self.email).filter(item=self.item).count() == 0: 
 			agreement.email = self.email
 			agreement.item = self.item
 			agreement.save()
@@ -76,7 +76,7 @@ class AgreementRequest(models.Model):
 			[self.email]
 		)
 
-		AgreementRequest.filter(expired=True).delete()
-		
+		AgreementRequest.objects.filter(creationDate__lte=(timezone.now()-datetime.timedelta(days=1))).delete()
+
 		super().save(*args,**kwargs)
 

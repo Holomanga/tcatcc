@@ -3,16 +3,14 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-<h1>Index</h1>
 
-<p>Index</p>
 <table class="table">
 	<thead>
 		<tr>
 			<th scope="col">Name</th>
 			<th scope="col">Description</th>
 		</tr>
-		{% if user.is_authenticated %}
+		{% if True %}
 		<tr>
 			<td colspan="2"><a href="{% url 'tcatcc:create-item' %}"><div><strong>Create new item</strong></div><a></td>
 		</tr>
